@@ -19,7 +19,10 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
 
 
 const int led_pin = 3;
-const int receive_pin = 4;
+const int receive_pin = 2;
+const int analog_pin = 2; //PB4
+
+int sensorValue=0;
 
 void setup()
 {
@@ -28,7 +31,7 @@ void setup()
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
   #endif
   // End of trinket special code
-  //pinMode(4, INPUT); 
+  pinMode(analog_pin , INPUT); 
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
@@ -65,8 +68,18 @@ void colorWipe(uint32_t c, uint8_t wait) {
 
 void loop()
 {
+  sensorValue = analogRead(analog_pin );
+if(sensorValue > 40) {
+ digitalWrite(led_pin, HIGH); // Flash a light to show received good message
+} else {
+   digitalWrite(led_pin, LOW); // Flash a light to show received good message
+}
+
+  
     uint8_t buf[VW_MAX_MESSAGE_LEN];
     uint8_t buflen = VW_MAX_MESSAGE_LEN;
+
+
 
     if (vw_get_message(buf, &buflen)) // Non-blocking
     {
@@ -82,11 +95,11 @@ void loop()
         colorWipe(strip.Color(0, 255, 0), 0); // green
         }
 
- digitalWrite(led_pin, HIGH); // Flash a light to show received good message
+// digitalWrite(led_pin, HIGH); // Flash a light to show received good message
         
-        delay(150);
-	      digitalWrite(led_pin, LOW);
+      //  delay(150);
+	  //    digitalWrite(led_pin, LOW);
     }
     
-    digitalWrite(led_pin, LOW);
+  //  digitalWrite(led_pin, LOW);
 }
