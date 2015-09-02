@@ -5,6 +5,8 @@
 
 #define PIN 0
 
+#define ANALOGPIN 2
+
 int sensorValue = 0;  // variable to store the value coming from the sensor
 
 
@@ -29,7 +31,7 @@ void setup() {
   #endif
   // End of trinket special code
 
-
+pinMode(ANALOGPIN, INPUT); 
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 }
@@ -38,7 +40,7 @@ void loop() {
   // Some example procedures showing how to display to the pixels:
 
 
-  int sensorPin = 3;    // select the input pin for the potentiometer
+  int sensorPin = ANALOGPIN;    // select the input pin for the potentiometer
 sensorValue = analogRead(sensorPin);
 sensorValue = sensorValue - 15;
 if(sensorValue < 0 ) {

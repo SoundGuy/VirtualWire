@@ -18,8 +18,8 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
 
 
-const int led_pin = 2;
-const int receive_pin = 3;
+const int led_pin = 3;
+const int receive_pin = 4;
 
 void setup()
 {
@@ -28,20 +28,28 @@ void setup()
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
   #endif
   // End of trinket special code
+  //pinMode(4, INPUT); 
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
   colorWipe(strip.Color(0, 0, 255), 25); // Red 
 
     delay(200);
-colorWipe(strip.Color(0, 0, 0), 0); // green
+
+pinMode(led_pin,OUTPUT); 
+digitalWrite(led_pin, HIGH); // Flash a light to show received good message
+        
+        delay(250);
+        digitalWrite(led_pin, LOW);
+    
+colorWipe(strip.Color(0, 0, 0), 0); // blank
     // Initialise the IO and ISR
     vw_set_rx_pin(receive_pin);
     vw_setup(2000);	 // Bits per sec
 
     vw_rx_start();       // Start the receiver PLL running
 
-    pinMode(led_pin, OUTPUT);
+    //pinMode(led_pin, OUTPUT);
 }
 
 
@@ -74,10 +82,11 @@ void loop()
         colorWipe(strip.Color(0, 255, 0), 0); // green
         }
 
-// digitalWrite(led_pin, HIGH); // Flash a light to show received good message
+ digitalWrite(led_pin, HIGH); // Flash a light to show received good message
         
         delay(150);
 	      digitalWrite(led_pin, LOW);
     }
+    
     digitalWrite(led_pin, LOW);
 }
