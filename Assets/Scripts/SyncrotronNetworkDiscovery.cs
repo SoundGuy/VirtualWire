@@ -1,0 +1,35 @@
+﻿using UnityEngine;
+using System;
+using System.Collections;
+using UnityEngine.Networking;
+
+public class SyncrotronNetworkDiscovery : NetworkDiscovery {
+
+	public NetworkManager manager;
+
+	void Awake()
+	{
+		manager = GetComponent<NetworkManager>();
+	}
+
+	public override void OnReceivedBroadcast (string fromAddress, string data)
+	{
+		Debug.LogError(fromAddress);
+		Debug.LogError(data);
+		Debug.LogError(broadcastsReceived.Count);
+		Debug.LogError(hostId);
+
+		var items = data.Split(':');
+		if (items.Length == 3 && items[0] == "NetworkManager")
+		{
+			if (NetworkManager.singleton != null && NetworkManager.singleton.client == null)
+			{
+				manager.networkAddress = items[1];
+				manager.networkPort = Convert.ToInt32(items[2]);
+				manager.StartClient();
+			}
+			
+			StopBroadcast();
+		}
+	}
+}
