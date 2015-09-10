@@ -11,3 +11,7 @@ EditorBuildSettings:
     path: Assets/MainScene.unity
   - enabled: 0
     path: Assets/Scenes/NetworkingScene.unity
+  - enabled: 0
+    path: Assets/Scenes/ServerScene.unity
+  - enabled: 0
+    path: Assets/Scenes/ClientScene.unity
