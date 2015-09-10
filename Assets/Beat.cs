@@ -23,15 +23,21 @@ public class Beat : MonoBehaviour {
 	int clickCount;
 	float [] clickTimes;
 
+	bool started;
+
 
 
 	float GetMS(int bpm) {
 		return 60000f / bpm /1000f;
 	}
 
+	float GetBMP(float sec) {
+		return 60f/sec;
+	}
 	// Use this for initialization
 	void Start () {
 		onOff = false;
+		started = false;
 		bpm = 128;
 		LastBlink = 0;//Time.time;
 		MSDiff = (GetMS (bpm));
@@ -39,6 +45,7 @@ public class Beat : MonoBehaviour {
 		BPMInput.text = bpm.ToString();
 
 		clickCount = 0;
+		clickTimes = new float[4];
 	
 	}
 	
@@ -52,33 +59,54 @@ public class Beat : MonoBehaviour {
 
 		debug.text = "time = " + Time.time + "last " + LastBlink + " last + diff" + (LastBlink + MSDiff) ;
 
-
-		if (onOff == false) {
-			if (Time.time > LastBlink + MSDiff) {
-				Blinker.color = Color.white;
-				LastBlinkStart = Time.time;
-				sound1.Play();
-				onOff = true;
-			}
-		} else {
-			if (Time.time > LastBlink + MSDiff + BlinkLength) {
+		if (started) {
+			if (onOff == false) {
+				if (Time.time > LastBlink + MSDiff) {
+					Blinker.color = Color.white;
+					LastBlinkStart = Time.time;
+					sound1.Play ();
+					onOff = true;
+				}
+			} else {
+				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
 					Blinker.color = Color.black;
-				sound2.Play();
-				onOff = false;
+					sound2.Play ();
+					onOff = false;
 
 
 							
+				}
 			}
-		}
-		       
+		}   
 
 	
 	}
 
 
-	void pressBPM() {
+	public void pressBPM() {
 
-		
+
+
+		clickTimes[clickCount++] = Time.time;
+		sound1.Play ();
+
+		if (clickCount == 4) {
+			started = true;
+		//	float [] diffs = new float[4];
+			float tot=0;
+			for (int i=0;i<3;i++) {
+
+		//		diffs[i] = clickTimes[i +1] - clickTimes[i];
+				tot += clickTimes[i +1] - clickTimes[i];
+			}
+			float avg = tot /3;
+			Debug.Log( "avg =" + avg);
+
+			LastBlink = clickTimes[0];
+			bpm = (int)GetBMP (avg);
+			MSDiff = (GetMS (bpm));
+			BPMInput.text= bpm.ToString();
+		}
 	}
 }
