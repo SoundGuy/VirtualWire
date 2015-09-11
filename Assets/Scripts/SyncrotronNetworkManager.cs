@@ -25,24 +25,31 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 	{
 #if SYNC_SERVER
 		StartServer();
-#elif SYNC_CLIENT
+#elif SYNC_CLIENT || (UNITY_ANDROID && !UNITY_EDITOR)
 		StartClient();
 #endif
 	}
 
 	void StartServer()
 	{
+		ServerGUI.LoadServerScene();
 		manager.StartServer();
 		discovery.StartAsServer();
 	}
 
 	void StartClient()
 	{
+		ClientGUI.LoadClientScene();
 		discovery.StartAsClient();
 	}
 	
 	void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
+		
 		if (!NetworkClient.active && !NetworkServer.active && manager.matchMaker == null)
 		{
 			if (Input.GetKeyDown(KeyCode.S))
