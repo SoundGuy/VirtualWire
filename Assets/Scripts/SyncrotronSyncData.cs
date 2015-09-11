@@ -10,8 +10,18 @@ public class SyncrotronSyncData : NetworkBehaviour {
 
 	public string currentCommand;
 
+	[SyncVar(hook="SetClientBPM")]
+	public int BPM;
+
 	void Awake () {
 		Instance = this;
+	}
+
+	void OnEnable () {
+		if(BPM != 0)
+		{
+			SetClientBPM(BPM);
+		}
 	}
 	
 	// Update is called once per frame
@@ -30,6 +40,24 @@ public class SyncrotronSyncData : NetworkBehaviour {
 	{
 		currentCommand = command;
 		ClientGUI.UpdateCommandText(command);
+	}
+
+	public static void UpdateBPM(int bpm)
+	{
+		Debug.LogError("UpdateBPM");
+		if(Instance)
+		{
+			Instance.BPM=bpm;
+			Instance.RpcSendCommandToClient("BPM"+bpm);
+		}
+	}
+
+	private void SetClientBPM(int value)
+	{
+		if(ClientGUI.Instance != null)
+		{
+			ClientGUI.Instance.SetBPM(value);
+		}
 	}
 
 

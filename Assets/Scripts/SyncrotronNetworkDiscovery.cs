@@ -14,11 +14,6 @@ public class SyncrotronNetworkDiscovery : NetworkDiscovery {
 
 	public override void OnReceivedBroadcast (string fromAddress, string data)
 	{
-		Debug.LogError(fromAddress);
-		Debug.LogError(data);
-		Debug.LogError(broadcastsReceived.Count);
-		Debug.LogError(hostId);
-
 		var items = data.Split(':');
 		if (items.Length == 3 && items[0] == "NetworkManager")
 		{

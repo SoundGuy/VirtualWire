@@ -55,7 +55,6 @@ public class Beat : MonoBehaviour {
 			Debug.Log("new BPM");
 		}
 		LenMS.text = MSDiff.ToString();
-		float now = Time.time;
 
 		debug.text = "time = " + Time.time + "last " + LastBlink + " last + diff" + (LastBlink + MSDiff) ;
 

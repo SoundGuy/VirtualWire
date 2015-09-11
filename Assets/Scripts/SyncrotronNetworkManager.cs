@@ -45,6 +45,11 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 	
 	void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
+		
 		if (!NetworkClient.active && !NetworkServer.active && manager.matchMaker == null)
 		{
 			if (Input.GetKeyDown(KeyCode.S))
