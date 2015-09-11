@@ -64,8 +64,30 @@ public class ServerGUI : MonoBehaviour {
 		} 
 	}
 
+	public void PressGO() {
+		started = true;
+		LastBlink = Time.time;
+
+		bpm = int.Parse( BPMInput.text);
+		MSDiff = (Utils.GetMS (bpm));
+
+		
+		SyncrotronSyncData.UpdateBPM(bpm);
+		
+		clickCount = 0;
+
+	}
+
 	public void PressBPM()
 	{
+		/*
+		if (clickCount != 0) {
+			Debug.Log ("diff" + (Time.time - clickTimes[clickCount]) );
+			if (Time.time - clickTimes [clickCount] > 2) {
+				clickCount = 0;
+			}
+		}*/
+
 		clickTimes[clickCount++] = Time.time;
 
 		if (clickCount == 4) {
