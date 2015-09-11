@@ -35,7 +35,7 @@ public class ClientGUI : MonoBehaviour {
 		started = false;
 		bpm = 128;
 		LastBlink = 0;//Time.time;
-		MSDiff = (GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm));
 
 		if(SyncrotronSyncData.Instance != null && SyncrotronSyncData.Instance.BPM!=0)
 		{
@@ -46,7 +46,7 @@ public class ClientGUI : MonoBehaviour {
 	public void SetBPM(int value)
 	{
 		bpm = value;
-		MSDiff = (GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm));
 		RestartBPM();
 	}
 
@@ -74,10 +74,6 @@ public class ClientGUI : MonoBehaviour {
 				}
 			}
 		} 
-	}
-
-	float GetMS(int bpm) {
-		return 60000f / bpm /1000f;
 	}
 
 	public static void UpdateCommandText(string text)

@@ -37,7 +37,7 @@ public class ServerGUI : MonoBehaviour {
 		started = false;
 		bpm = 128;
 		LastBlink = 0;//Time.time;
-		MSDiff = (GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm));
 		Blinker.color = Color.black;
 		BPMInput.text = bpm.ToString();
 		
@@ -64,14 +64,6 @@ public class ServerGUI : MonoBehaviour {
 		} 
 	}
 
-	float GetMS(int bpm) {
-		return 60000f / bpm /1000f;
-	}
-
-	float GetBMP(float sec) {
-		return 60f/sec;
-	}
-
 	public void PressBPM()
 	{
 		clickTimes[clickCount++] = Time.time;
@@ -89,8 +81,8 @@ public class ServerGUI : MonoBehaviour {
 			Debug.Log( "avg =" + avg);
 			
 			LastBlink = clickTimes[0];
-			bpm = (int)GetBMP (avg);
-			MSDiff = (GetMS (bpm));
+			bpm = (int)Utils.GetBMP (avg);
+			MSDiff = (Utils.GetMS (bpm));
 			BPMInput.text= bpm.ToString();
 
 			SyncrotronSyncData.UpdateBPM(bpm);
