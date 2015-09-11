@@ -38,7 +38,7 @@ void setup()
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
-  colorWipe(strip.Color(0, 0, 255), 25); // Red 
+  colorWipe(strip.Color(0, 128, 128), 25); // Red 
 
     delay(200);
 
@@ -108,7 +108,7 @@ void colorFadeIn(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   // make sure it's on
   colorWipe(strip.Color((uint8_t)r0, (uint8_t)g0, (uint8_t)b0), 0);
 }
-
+/*
 // Fill all pixels, fading in and out
 void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   int num_steps = 16;
@@ -126,7 +126,7 @@ void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   }
   // make sure it's off
   colorWipe(strip.Color(0,0,0), 0);
-}
+}*/
 
 void loop() {
   sensorValue = analogRead(analog_pin );
@@ -153,9 +153,9 @@ void loop() {
         break;
       case 'R': // 82 // call rainbow
         // rainbow starts and ends in red, so fade in and out to make it smoother
-        colorFadeIn(255,0,0,5);
+        //colorFadeIn(255,0,0,5);
         rainbow(buf[1]);
-        colorFadeOut(255,0,0,5);        
+        //colorFadeOut(255,0,0,5);        
         break;
     }      
   }

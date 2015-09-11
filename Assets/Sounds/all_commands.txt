@@ -1,0 +1,8 @@
+- code for arduino/attami:
+	VirtualWire\ArduinoCode\receiverand_neo2
+	VirtualWire\ArduinoCode\VWtransmitter2	
+- see python code (self explanatory) for the sequence of commands, or just play it into attami:
+	VirtualWire\pythonCode\send_serial_to_arduino.py
+- you'll have to cut the commands to single files, just make sure to leave a few samples before and after, otherwise it sometimes misses
+- commands are 4 bytes for 'on' (id + 3 rgb values), and 5 for 'fade' (id + 5 rgb + fade time)
+- the wav file will work on phone, for pc you have to invert it (take minus the signal)
