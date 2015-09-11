@@ -18,7 +18,7 @@ public class ServerGUI : MonoBehaviour {
 	float MSDiff;
 	float LastBlink;
 	float LastBlinkStart;
-	float BlinkLength = 0.100f;
+	float BlinkLength = 0.131f;
 	bool onOff;
 
 	void Awake () {
