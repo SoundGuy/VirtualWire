@@ -20,6 +20,7 @@ public class ClientGUI : MonoBehaviour {
 	public AudioSource[] Sounds;
 
 	private int bpm;
+	float rhythm;
 	int CurrentBeat;
 	bool started;
 	float MSDiff;
@@ -60,7 +61,7 @@ public class ClientGUI : MonoBehaviour {
 		started = false;
 		bpm = 128;
 		LastBlink = 0;//Time.time;
-		MSDiff = (Utils.GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 
 		Blinker.color = new Color(1, 1, 1, 0.5f);
 
@@ -73,7 +74,7 @@ public class ClientGUI : MonoBehaviour {
 	public void SetBPM(int value)
 	{
 		bpm = value;
-		MSDiff = (Utils.GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		RestartBPM();
 	}
 
@@ -166,7 +167,23 @@ public class ClientGUI : MonoBehaviour {
 				}
 				}
 			}
-
+		}
+		
+		if (text == "r1")
+		{
+			rhythm = 1f;
+		}
+		if (text == "r2")
+		{
+			rhythm = 0.5f;
+		}
+		if (text == "r3")
+		{
+			rhythm = 0.25f;
+		}
+		if (text == "r4")
+		{
+			rhythm = 0.125f;
 		}
 	}
 

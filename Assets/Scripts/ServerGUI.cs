@@ -84,7 +84,7 @@ public class ServerGUI : MonoBehaviour {
 		bpm = 128;
 		SliderBPM.value = bpm;
 		LastBlink = 0;//Time.time;
-		MSDiff = (Utils.GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		Blinker.sprite = BlinkOff;
 		BPMInput.text = bpm.ToString();
 		
@@ -169,7 +169,7 @@ public class ServerGUI : MonoBehaviour {
 
 		bpm = int.Parse( BPMInput.text);
 		SliderBPM.value = bpm;
-		MSDiff = (Utils.GetMS (bpm));
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 
 		
 		SyncrotronSyncData.UpdateBPM(bpm);
@@ -205,7 +205,7 @@ public class ServerGUI : MonoBehaviour {
 			LastBlink = clickTimes[0];
 			bpm = (int)Utils.GetBMP (avg);
 			SliderBPM.value = bpm;
-			MSDiff = (Utils.GetMS (bpm));
+			MSDiff = (Utils.GetMS (bpm, rhythm));
 			BPMInput.text= bpm.ToString();
 
 			SyncrotronSyncData.UpdateBPM(bpm);
@@ -221,6 +221,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
+		SyncrotronSyncData.Instance.RpcSendCommandToClient("r1");
 	}
 	
 	public void ClickRhythm18()
@@ -230,6 +231,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = true;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
+		SyncrotronSyncData.Instance.RpcSendCommandToClient("r2");
 	}
 	
 	public void ClickRhythm116()
@@ -239,6 +241,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = true;
 		ToggleRhythm[3].isOn = false;
+		SyncrotronSyncData.Instance.RpcSendCommandToClient("r3");
 	}
 	
 	public void ClickRhythm132()
@@ -248,6 +251,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = true;
+		SyncrotronSyncData.Instance.RpcSendCommandToClient("r4");
 	}
 
 	public static void LoadServerScene()
