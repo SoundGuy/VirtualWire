@@ -10,6 +10,8 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 	[SerializeField] public bool showGUI = true;
 	[SerializeField] public int offsetX;
 	[SerializeField] public int offsetY;
+
+	private bool isClientDevice = false;
 	
 	// Runtime variable
 	bool showServer = false;
@@ -39,8 +41,10 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 
 	void StartClient()
 	{
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
 		ClientGUI.LoadClientScene();
 		discovery.StartAsClient();
+		isClientDevice = true;
 	}
 	
 	void Update()
@@ -48,6 +52,12 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			Application.Quit();
+		}
+
+		if(isClientDevice && !NetworkClient.active && !discovery.running)
+		{
+			discovery.Initialize();
+			discovery.StartAsClient();
 		}
 		
 		if (!NetworkClient.active && !NetworkServer.active && manager.matchMaker == null)

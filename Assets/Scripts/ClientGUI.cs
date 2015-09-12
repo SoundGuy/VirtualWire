@@ -6,10 +6,18 @@ public class ClientGUI : MonoBehaviour {
 
 	public static ClientGUI Instance;
 
+	public Image Blinker;
+
 	public Text commandText;
 
-	public AudioSource sound1;
-	public AudioSource sound2;
+#if UNITY_EDITOR || UNITY_STANDALONE
+	public AudioClip[] ClipsPC;
+#endif
+#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
+	public AudioClip[] ClipsMobile;
+#endif
+
+	public AudioSource[] Sounds;
 
 	private int bpm;
 	bool started;
@@ -22,6 +30,15 @@ public class ClientGUI : MonoBehaviour {
 	void Awake () {
 		Instance=this;
 		StartBPM();
+
+		for(int i=0; i<Sounds.Length; i++)
+		{
+#if UNITY_EDITOR || UNITY_STANDALONE
+			Sounds[i].clip = ClipsPC[i];
+#else
+			Sounds[i].clip = ClipsMobile[i];
+#endif
+		}
 	}
 	
 	// Update is called once per frame
@@ -36,6 +53,8 @@ public class ClientGUI : MonoBehaviour {
 		bpm = 128;
 		LastBlink = 0;//Time.time;
 		MSDiff = (Utils.GetMS (bpm));
+
+		Blinker.color = new Color(1, 1, 1, 0.5f);
 
 		if(SyncrotronSyncData.Instance != null && SyncrotronSyncData.Instance.BPM!=0)
 		{
@@ -55,6 +74,7 @@ public class ClientGUI : MonoBehaviour {
 		started = true;
 		onOff = false;
 		LastBlink = 0;
+		Blinker.color = new Color(1, 1, 1, 0.5f);
 	}
 
 	void UpdateBPM()
@@ -63,13 +83,15 @@ public class ClientGUI : MonoBehaviour {
 			if (onOff == false) {
 				if (Time.time > LastBlink + MSDiff) {
 					LastBlinkStart = Time.time;
-					sound1.Play ();
+					Sounds[1].Play();
+					Blinker.color = new Color(1, 1, 1, 1);
 					onOff = true;
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
-					sound2.Play ();
+					Blinker.color = new Color(1, 1, 1, 0.5f);
+					Sounds[2].Play ();
 					onOff = false;
 				}
 			}

@@ -9,8 +9,10 @@ public class ServerGUI : MonoBehaviour {
 
 	// BPM stuff
 
-	public InputField BPMInput;
+	public Text BPMInput;
 	public Image Blinker;
+	public Sprite BlinkOn;
+	public Sprite BlinkOff;
 	int bpm;
 	int clickCount;
 	float [] clickTimes;
@@ -38,7 +40,7 @@ public class ServerGUI : MonoBehaviour {
 		bpm = 128;
 		LastBlink = 0;//Time.time;
 		MSDiff = (Utils.GetMS (bpm));
-		Blinker.color = Color.black;
+		Blinker.sprite = BlinkOff;
 		BPMInput.text = bpm.ToString();
 		
 		clickCount = 0;
@@ -50,14 +52,14 @@ public class ServerGUI : MonoBehaviour {
 		if (started) {
 			if (onOff == false) {
 				if (Time.time > LastBlink + MSDiff) {
-					Blinker.color = Color.white;
+					Blinker.sprite = BlinkOn;
 					LastBlinkStart = Time.time;
 					onOff = true;
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
-					Blinker.color = Color.black;
+					Blinker.sprite = BlinkOff;
 					onOff = false;
 				}
 			}
