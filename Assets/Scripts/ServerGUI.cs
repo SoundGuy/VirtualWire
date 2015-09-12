@@ -6,6 +6,19 @@ public class ServerGUI : MonoBehaviour {
 
 	public static ServerGUI Instance;
 
+	// Manual stuff
+	public GroupToggleRGB[] GroupToggleRGBs;
+	public RectTransform ManualMarker;
+	private int currentToggleGroupRGB = 0;
+
+	// Patterns stuff
+	public Toggle[] TogglePatterns;
+
+	// Rhythm stuff
+	public Toggle[] ToggleRhythm;
+
+	float rhythm;
+
 
 	// BPM stuff
 
@@ -13,6 +26,8 @@ public class ServerGUI : MonoBehaviour {
 	public Image Blinker;
 	public Sprite BlinkOn;
 	public Sprite BlinkOff;
+	public Slider SliderBPM;
+
 	int bpm;
 	int clickCount;
 	float [] clickTimes;
@@ -25,7 +40,7 @@ public class ServerGUI : MonoBehaviour {
 
 	void Awake () {
 		Instance=this;
-		StartBPM();
+		ResetGUI();
 	}
 	
 	// Update is called once per frame
@@ -33,11 +48,34 @@ public class ServerGUI : MonoBehaviour {
 		UpdateBPM();
 	}
 
+	public void ResetGUI()
+	{
+		foreach(GroupToggleRGB GToggleRGB in GroupToggleRGBs)
+		{
+			GToggleRGB.ToggleR.isOn = false;
+			GToggleRGB.ToggleG.isOn = false;
+			GToggleRGB.ToggleB.isOn = false;
+		}
+		foreach(Toggle togglePattern in TogglePatterns)
+		{
+			togglePattern.isOn = false;
+		}
+		ToggleRhythm[0].isOn=true;
+		for(int i=1;i<ToggleRhythm.Length;i++)
+		{
+			ToggleRhythm[i].isOn=false;
+		}
+		rhythm = 1f;
+
+		StartBPM();
+	}
+
 	void StartBPM()
 	{
 		onOff = false;
 		started = false;
 		bpm = 128;
+		SliderBPM.value = bpm;
 		LastBlink = 0;//Time.time;
 		MSDiff = (Utils.GetMS (bpm));
 		Blinker.sprite = BlinkOff;
@@ -55,6 +93,13 @@ public class ServerGUI : MonoBehaviour {
 					Blinker.sprite = BlinkOn;
 					LastBlinkStart = Time.time;
 					onOff = true;
+
+					ManualMarker.localPosition= new Vector3(GroupToggleRGBs[currentToggleGroupRGB].transform.localPosition.x, ManualMarker.localPosition.y, ManualMarker.localPosition.z);
+					currentToggleGroupRGB++;
+					if(currentToggleGroupRGB >= GroupToggleRGBs.Length)
+					{
+						currentToggleGroupRGB = 0;
+					}
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
@@ -66,11 +111,29 @@ public class ServerGUI : MonoBehaviour {
 		} 
 	}
 
+	public void SetBpmFromSlider()
+	{
+		BPMInput.text = ""+(int)SliderBPM.value;
+	}
+
+	public void IncreaseBPM()
+	{
+		BPMInput.text = "" + (int.Parse( BPMInput.text) + 1 );
+		SliderBPM.value = int.Parse( BPMInput.text);
+	}
+
+	public void DecreaseBPM()
+	{
+		BPMInput.text = "" + (int.Parse( BPMInput.text) -1 );
+		SliderBPM.value = int.Parse( BPMInput.text);
+	}
+
 	public void PressGO() {
 		started = true;
 		LastBlink = Time.time;
 
 		bpm = int.Parse( BPMInput.text);
+		SliderBPM.value = bpm;
 		MSDiff = (Utils.GetMS (bpm));
 
 		
@@ -106,6 +169,7 @@ public class ServerGUI : MonoBehaviour {
 			
 			LastBlink = clickTimes[0];
 			bpm = (int)Utils.GetBMP (avg);
+			SliderBPM.value = bpm;
 			MSDiff = (Utils.GetMS (bpm));
 			BPMInput.text= bpm.ToString();
 

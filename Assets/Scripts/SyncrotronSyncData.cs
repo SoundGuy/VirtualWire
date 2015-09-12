@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 
-[NetworkSettings(channel=1,sendInterval=0.05f)]
+[NetworkSettings(channel=1,sendInterval=0.03333334f)]
 public class SyncrotronSyncData : NetworkBehaviour {
 
 	public static SyncrotronSyncData Instance;
@@ -28,10 +28,10 @@ public class SyncrotronSyncData : NetworkBehaviour {
 	void Update () {
 		if(isServer)
 		{
-			if(Input.GetKeyDown(KeyCode.P))
+			/*if(Input.GetKeyDown(KeyCode.P))
 			{
 				RpcSendCommandToClient("pupik"+Time.time);
-			}
+			}*/
 		}
 	}
 
@@ -44,7 +44,6 @@ public class SyncrotronSyncData : NetworkBehaviour {
 
 	public static void UpdateBPM(int bpm)
 	{
-		Debug.LogError("UpdateBPM");
 		if(Instance)
 		{
 			Instance.BPM=bpm;

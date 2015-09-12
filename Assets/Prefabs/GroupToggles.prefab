@@ -141,6 +141,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22488858}
+  - 114: {fileID: 11428442}
   m_Layer: 5
   m_Name: GroupToggles
   m_TagString: Untagged
@@ -219,6 +220,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11428442
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1546bcf7db0950d499363538b0af8a7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ToggleR: {fileID: 11490646}
+  ToggleG: {fileID: 11483744}
+  ToggleB: {fileID: 11472244}
 --- !u!114 &11446754
 MonoBehaviour:
   m_ObjectHideFlags: 1

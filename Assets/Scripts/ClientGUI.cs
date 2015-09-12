@@ -26,6 +26,7 @@ public class ClientGUI : MonoBehaviour {
 	float LastBlinkStart;
 	float BlinkLength = 0.131f;
 	bool onOff;
+	bool colorOnOff;
 
 	void Awake () {
 		Instance=this;
@@ -83,19 +84,25 @@ public class ClientGUI : MonoBehaviour {
 			if (onOff == false) {
 				if (Time.time > LastBlink + MSDiff) {
 					LastBlinkStart = Time.time;
-					Sounds[1].Play();
 					Blinker.color = new Color(1, 1, 1, 1);
 					onOff = true;
+					if(colorOnOff)
+					{
+						colorOnOff = false;
+						Sounds[1].Play();
+					}else{
+						colorOnOff = true;
+						Sounds[2].Play();
+					}
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
 					Blinker.color = new Color(1, 1, 1, 0.5f);
-					Sounds[2].Play ();
 					onOff = false;
 				}
 			}
-		} 
+		}
 	}
 
 	public static void UpdateCommandText(string text)
