@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -20,6 +20,7 @@ public class ClientGUI : MonoBehaviour {
 	public AudioSource[] Sounds;
 
 	private int bpm;
+	int CurrentBeat;
 	bool started;
 	float MSDiff;
 	float LastBlink;
@@ -28,9 +29,13 @@ public class ClientGUI : MonoBehaviour {
 	bool onOff;
 	bool colorOnOff;
 
+	int [] ColorPattern;
+
 	void Awake () {
 		Instance=this;
 		StartBPM();
+		ColorPattern = new int[8];
+		CurrentBeat = 0;
 
 		for(int i=0; i<Sounds.Length; i++)
 		{
@@ -41,6 +46,8 @@ public class ClientGUI : MonoBehaviour {
 #endif
 		}
 	}
+
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -86,6 +93,30 @@ public class ClientGUI : MonoBehaviour {
 					LastBlinkStart = Time.time;
 					Blinker.color = new Color(1, 1, 1, 1);
 					onOff = true;
+					CurrentBeat++;
+					if (CurrentBeat ==8) {
+						CurrentBeat =0;
+					}
+					switch (ColorPattern[CurrentBeat]) {
+					case 0:
+						Sounds[36].Play();
+						break;
+					case 1:
+						Sounds[11].Play();
+						Blinker.color = new Color(1, 0, 0, 1);
+						break;
+					case 2:
+						Sounds[9].Play();
+						Blinker.color = new Color(0, 1, 0, 1);
+						break;
+					case 3:
+						Sounds[8].Play();
+						Blinker.color = new Color(0, 0, 1, 1);
+						break;
+					}
+
+					/*
+
 					if(colorOnOff)
 					{
 						colorOnOff = false;
@@ -93,7 +124,7 @@ public class ClientGUI : MonoBehaviour {
 					}else{
 						colorOnOff = true;
 						Sounds[2].Play();
-					}
+					}*/
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
@@ -105,11 +136,37 @@ public class ClientGUI : MonoBehaviour {
 		}
 	}
 
+
+
 	public static void UpdateCommandText(string text)
 	{
 		if(Instance != null)
 		{
 			Instance.commandText.text=text;
+		}
+
+		if (text [0] == 'p') { // Pattern
+			for (int i=0;i<8;i++) {
+				switch (text[i+1]) {
+				case  'K': {
+					Instance.ColorPattern[i] =0;
+					break;
+				}
+				case  'R': {
+					Instance.ColorPattern[i] =1;
+					break;
+				}
+				case  'G': {
+					Instance.ColorPattern[i] =2;
+					break;
+				}
+				case  'B': {
+					Instance.ColorPattern[i] =3;
+					break;
+				}
+				}
+			}
+
 		}
 	}
 

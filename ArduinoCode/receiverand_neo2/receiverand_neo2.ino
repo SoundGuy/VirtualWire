@@ -15,7 +15,7 @@
 #endif
 
 #define PIN 0
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(11, PIN, NEO_GRB + NEO_KHZ800);
 
 
 const int led_pin = 3;
