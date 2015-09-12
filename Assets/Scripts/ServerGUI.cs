@@ -179,6 +179,42 @@ public class ServerGUI : MonoBehaviour {
 		}
 	}
 
+	public void ClickRhythm14()
+	{
+		rhythm = 1f;
+		ToggleRhythm[0].isOn = true;
+		ToggleRhythm[1].isOn = false;
+		ToggleRhythm[2].isOn = false;
+		ToggleRhythm[3].isOn = false;
+	}
+	
+	public void ClickRhythm18()
+	{
+		rhythm = 0.5f;
+		ToggleRhythm[0].isOn = false;
+		ToggleRhythm[1].isOn = true;
+		ToggleRhythm[2].isOn = false;
+		ToggleRhythm[3].isOn = false;
+	}
+	
+	public void ClickRhythm116()
+	{
+		rhythm = 0.25f;
+		ToggleRhythm[0].isOn = false;
+		ToggleRhythm[1].isOn = false;
+		ToggleRhythm[2].isOn = true;
+		ToggleRhythm[3].isOn = false;
+	}
+	
+	public void ClickRhythm132()
+	{
+		rhythm = 0.125f;
+		ToggleRhythm[0].isOn = false;
+		ToggleRhythm[1].isOn = false;
+		ToggleRhythm[2].isOn = false;
+		ToggleRhythm[3].isOn = true;
+	}
+
 	public static void LoadServerScene()
 	{
 		Application.LoadLevelAdditive("ServerScene");
