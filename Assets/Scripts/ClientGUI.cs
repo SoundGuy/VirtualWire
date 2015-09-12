@@ -20,7 +20,7 @@ public class ClientGUI : MonoBehaviour {
 	public AudioSource[] Sounds;
 
 	private int bpm;
-	float rhythm;
+	public float rhythm=1f;
 	int CurrentBeat;
 	bool started;
 	float MSDiff;
@@ -31,6 +31,11 @@ public class ClientGUI : MonoBehaviour {
 	bool colorOnOff;
 
 	int [] ColorPattern;
+
+	public void UpdateMSDiff()
+	{
+		MSDiff = (Utils.GetMS (bpm, rhythm));
+	}
 
 	void Awake () {
 		Instance=this;
@@ -60,6 +65,7 @@ public class ClientGUI : MonoBehaviour {
 		onOff = false;
 		started = false;
 		bpm = 128;
+		rhythm=1f;
 		LastBlink = 0;//Time.time;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
 
@@ -171,19 +177,23 @@ public class ClientGUI : MonoBehaviour {
 		
 		if (text == "r1")
 		{
-			rhythm = 1f;
+			Instance.rhythm = 1f;
+			Instance.UpdateMSDiff();
 		}
 		if (text == "r2")
 		{
-			rhythm = 0.5f;
+			Instance.rhythm = 0.5f;
+			Instance.UpdateMSDiff();
 		}
 		if (text == "r3")
 		{
-			rhythm = 0.25f;
+			Instance.rhythm = 0.25f;
+			Instance.UpdateMSDiff();
 		}
 		if (text == "r4")
 		{
-			rhythm = 0.125f;
+			Instance.rhythm = 0.125f;
+			Instance.UpdateMSDiff();
 		}
 	}
 

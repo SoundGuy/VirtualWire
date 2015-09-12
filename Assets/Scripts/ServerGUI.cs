@@ -19,7 +19,7 @@ public class ServerGUI : MonoBehaviour {
 	// Rhythm stuff
 	public Toggle[] ToggleRhythm;
 
-	float rhythm;
+	float rhythm=1;
 
 
 	// BPM stuff
@@ -82,6 +82,7 @@ public class ServerGUI : MonoBehaviour {
 		onOff = false;
 		started = false;
 		bpm = 128;
+		rhythm=1f;
 		SliderBPM.value = bpm;
 		LastBlink = 0;//Time.time;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
@@ -221,6 +222,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		SyncrotronSyncData.Instance.RpcSendCommandToClient("r1");
 	}
 	
@@ -231,6 +233,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = true;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		SyncrotronSyncData.Instance.RpcSendCommandToClient("r2");
 	}
 	
@@ -241,6 +244,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = true;
 		ToggleRhythm[3].isOn = false;
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		SyncrotronSyncData.Instance.RpcSendCommandToClient("r3");
 	}
 	
@@ -251,6 +255,7 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = true;
+		MSDiff = (Utils.GetMS (bpm, rhythm));
 		SyncrotronSyncData.Instance.RpcSendCommandToClient("r4");
 	}
 
