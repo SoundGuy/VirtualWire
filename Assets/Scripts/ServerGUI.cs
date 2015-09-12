@@ -14,6 +14,8 @@ public class ServerGUI : MonoBehaviour {
 	// Patterns stuff
 	public Toggle[] TogglePatterns;
 
+	int [] PatternColor;
+
 	// Rhythm stuff
 	public Toggle[] ToggleRhythm;
 
@@ -41,11 +43,16 @@ public class ServerGUI : MonoBehaviour {
 	void Awake () {
 		Instance=this;
 		ResetGUI();
+		PatternColor = new int[8];
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		UpdateBPM();
+		if (Input.GetKey ("m")) {
+			Debug.Log("Pressed Manual");
+			PressSetManual();
+		}
 	}
 
 	public void ResetGUI()
@@ -83,6 +90,34 @@ public class ServerGUI : MonoBehaviour {
 		
 		clickCount = 0;
 		clickTimes = new float[4];
+	}
+
+	public void PressSetManual() {
+		string command = "p";
+		for (int i=0;i<8;i++) {
+			string col="K";
+			PatternColor[i] = 0;
+
+			if (GroupToggleRGBs[i].ToggleR.isOn) {
+				PatternColor[i] = 1;
+				col ="R";
+			}  
+			if (GroupToggleRGBs[i].ToggleG.isOn) {
+				PatternColor[i] = 2;
+				col ="G";
+			}  
+			if (GroupToggleRGBs[i].ToggleB.isOn) {
+				PatternColor[i] = 3;
+				col ="B";
+			}
+
+			command +=col;
+
+
+		}
+		Debug.Log (command);
+
+		SyncrotronSyncData.Instance.RpcSendCommandToClient(command);
 	}
 
 	void UpdateBPM()
