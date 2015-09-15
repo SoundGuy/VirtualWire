@@ -31,6 +31,15 @@ public class ClientGUI : MonoBehaviour {
 	bool colorOnOff;
 
 	int [] ColorPattern;
+	string[] ColorPatternLetter;
+
+	private int currentPattern;
+	private int[] colorPatterns1 = { 36,  1,  2,  3,  4,  5,  6,  7 };
+	private int[] colorPatterns2 = { 36,  8,  9, 10, 11, 12, 13, 14 };
+	private int[] colorPatterns3 = { 36, 15, 16, 17, 18, 19, 20, 21 };
+	private int[] colorPatterns4 = { 36, 22, 23, 24, 25, 26, 27, 28 };
+	private int[] colorPatterns5 = { 36, 29, 30, 31, 32, 33, 34, 35 };
+
 
 	public void UpdateMSDiff()
 	{
@@ -41,7 +50,9 @@ public class ClientGUI : MonoBehaviour {
 		Instance=this;
 		StartBPM();
 		ColorPattern = new int[8];
+		ColorPatternLetter = new string[8];
 		CurrentBeat = 0;
+		currentPattern = 0;
 
 		for(int i=0; i<Sounds.Length; i++)
 		{
@@ -67,7 +78,7 @@ public class ClientGUI : MonoBehaviour {
 		bpm = 128;
 		rhythm=1f;
 		LastBlink = 0;//Time.time;
-		MSDiff = (Utils.GetMS (bpm, rhythm));
+		UpdateMSDiff();
 
 		Blinker.color = new Color(1, 1, 1, 0.5f);
 
@@ -80,7 +91,7 @@ public class ClientGUI : MonoBehaviour {
 	public void SetBPM(int value)
 	{
 		bpm = value;
-		MSDiff = (Utils.GetMS (bpm, rhythm));
+		UpdateMSDiff();
 		RestartBPM();
 	}
 
@@ -104,7 +115,44 @@ public class ClientGUI : MonoBehaviour {
 					if (CurrentBeat ==8) {
 						CurrentBeat =0;
 					}
-					switch (ColorPattern[CurrentBeat]) {
+
+					switch(ColorPatternLetter[CurrentBeat])
+					{
+					case "K":
+						Sounds[36].Play();
+						Blinker.color = new Color(0, 0, 0, 1);
+						break;
+					case "B":
+						Sounds[1+(7*currentPattern)].Play();
+						Blinker.color = new Color(0, 0, 1, 1);
+						break;
+					case "G":
+						Sounds[2+(7*currentPattern)].Play();
+						Blinker.color = new Color(0, 1, 0, 1);
+						break;
+					case "C":
+						Sounds[3+(7*currentPattern)].Play();
+						Blinker.color = new Color(0, 1, 1, 1);
+						break;
+					case "R":
+						Sounds[4+(7*currentPattern)].Play();
+						Blinker.color = new Color(1, 0, 0, 1);
+						break;
+					case "P":
+						Sounds[5+(7*currentPattern)].Play();
+						Blinker.color = new Color(1, 0, 1, 1);
+						break;
+					case "Y":
+						Sounds[6+(7*currentPattern)].Play();
+						Blinker.color = new Color(1, 1, 0, 1);
+						break;
+					case "W":
+						Sounds[7+(7*currentPattern)].Play();
+						Blinker.color = new Color(1, 1, 1, 1);
+						break;
+					}
+
+					/*switch (ColorPattern[CurrentBeat]) {
 					case 0:
 						Sounds[36].Play();
 						break;
@@ -120,23 +168,15 @@ public class ClientGUI : MonoBehaviour {
 						Sounds[8].Play();
 						Blinker.color = new Color(0, 0, 1, 1);
 						break;
-					}
-
-					/*
-
-					if(colorOnOff)
-					{
-						colorOnOff = false;
-						Sounds[1].Play();
-					}else{
-						colorOnOff = true;
-						Sounds[2].Play();
 					}*/
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
-					Blinker.color = new Color(1, 1, 1, 0.5f);
+					if(currentPattern != 0)
+					{
+						Blinker.color = new Color(1, 1, 1, 0.5f);
+					}
 					onOff = false;
 				}
 			}
@@ -154,24 +194,12 @@ public class ClientGUI : MonoBehaviour {
 
 		if (text [0] == 'p') { // Pattern
 			for (int i=0;i<8;i++) {
-				switch (text[i+1]) {
-				case  'K': {
-					Instance.ColorPattern[i] =0;
-					break;
-				}
-				case  'R': {
-					Instance.ColorPattern[i] =1;
-					break;
-				}
-				case  'G': {
-					Instance.ColorPattern[i] =2;
-					break;
-				}
-				case  'B': {
-					Instance.ColorPattern[i] =3;
-					break;
-				}
-				}
+				Instance.ColorPatternLetter[i] = ""+text[i+1];
+			}
+			if(text.Length>9)
+			{
+				Instance.CurrentBeat = int.Parse(""+text[9]);
+				Instance.currentPattern = int.Parse(""+text[10]);
 			}
 		}
 		
@@ -182,17 +210,17 @@ public class ClientGUI : MonoBehaviour {
 		}
 		if (text == "r2")
 		{
-			Instance.rhythm = 0.5f;
+			Instance.rhythm = 2f;
 			Instance.UpdateMSDiff();
 		}
 		if (text == "r3")
 		{
-			Instance.rhythm = 0.25f;
+			Instance.rhythm = 4f;
 			Instance.UpdateMSDiff();
 		}
 		if (text == "r4")
 		{
-			Instance.rhythm = 0.125f;
+			Instance.rhythm = 8f;
 			Instance.UpdateMSDiff();
 		}
 	}

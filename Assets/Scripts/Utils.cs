@@ -16,7 +16,7 @@ public class Utils {
 
 	public static float GetMS(int bpm, float rhythm=1f)
 	{
-		return 60000f / (bpm / rhythm) /1000f;
+		return 60000f / (bpm * rhythm) /1000f;
 	}
 	
 	public static float GetBMP(float sec)

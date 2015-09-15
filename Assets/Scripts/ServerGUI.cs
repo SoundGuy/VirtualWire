@@ -10,11 +10,11 @@ public class ServerGUI : MonoBehaviour {
 	public GroupToggleRGB[] GroupToggleRGBs;
 	public RectTransform ManualMarker;
 	private int currentToggleGroupRGB = 0;
+	int [] PatternColor;
 
 	// Patterns stuff
 	public Toggle[] TogglePatterns;
-
-	int [] PatternColor;
+	private int currentPattern;
 
 	// Rhythm stuff
 	public Toggle[] ToggleRhythm;
@@ -67,10 +67,12 @@ public class ServerGUI : MonoBehaviour {
 		{
 			togglePattern.isOn = false;
 		}
-		ToggleRhythm[0].isOn=true;
+		TogglePatterns[0].isOn = true;
+		currentPattern = 0;
+		ToggleRhythm[0].isOn = true;
 		for(int i=1;i<ToggleRhythm.Length;i++)
 		{
-			ToggleRhythm[i].isOn=false;
+			ToggleRhythm[i].isOn = false;
 		}
 		rhythm = 1f;
 
@@ -84,7 +86,7 @@ public class ServerGUI : MonoBehaviour {
 		bpm = 128;
 		rhythm=1f;
 		SliderBPM.value = bpm;
-		LastBlink = 0;//Time.time;
+		LastBlink = -10;//Time.time;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
 		Blinker.sprite = BlinkOff;
 		BPMInput.text = bpm.ToString();
@@ -96,7 +98,7 @@ public class ServerGUI : MonoBehaviour {
 	public void PressSetManual() {
 		string command = "p";
 		for (int i=0;i<8;i++) {
-			string col="K";
+			/*string col="K";
 			PatternColor[i] = 0;
 
 			if (GroupToggleRGBs[i].ToggleR.isOn) {
@@ -110,15 +112,18 @@ public class ServerGUI : MonoBehaviour {
 			if (GroupToggleRGBs[i].ToggleB.isOn) {
 				PatternColor[i] = 3;
 				col ="B";
-			}
+			}*/
 
-			command +=col;
+			command +=GroupToggleRGBs[i].GetColorLetter();
 
 
 		}
+
+		command += currentToggleGroupRGB;
+		command += currentPattern;
 		Debug.Log (command);
 
-		SyncrotronSyncData.Instance.RpcSendCommandToClient(command);
+		SyncrotronSyncData.SendCommandToClient(command);
 	}
 
 	void UpdateBPM()
@@ -130,17 +135,49 @@ public class ServerGUI : MonoBehaviour {
 					LastBlinkStart = Time.time;
 					onOff = true;
 
-					ManualMarker.localPosition= new Vector3(GroupToggleRGBs[currentToggleGroupRGB].transform.localPosition.x, ManualMarker.localPosition.y, ManualMarker.localPosition.z);
 					currentToggleGroupRGB++;
 					if(currentToggleGroupRGB >= GroupToggleRGBs.Length)
 					{
 						currentToggleGroupRGB = 0;
 					}
+
+					ManualMarker.localPosition= new Vector3(GroupToggleRGBs[currentToggleGroupRGB].transform.localPosition.x, ManualMarker.localPosition.y, ManualMarker.localPosition.z);
+					switch(GroupToggleRGBs[currentToggleGroupRGB].GetColorLetter())
+					{
+					case "K":
+						Blinker.color = new Color(0, 0, 0, 1);
+						break;
+					case "B":
+						Blinker.color = new Color(0, 0, 1, 1);
+						break;
+					case "G":
+						Blinker.color = new Color(0, 1, 0, 1);
+						break;
+					case "C":
+						Blinker.color = new Color(0, 1, 1, 1);
+						break;
+					case "R":
+						Blinker.color = new Color(1, 0, 0, 1);
+						break;
+					case "P":
+						Blinker.color = new Color(1, 0, 1, 1);
+						break;
+					case "Y":
+						Blinker.color = new Color(1, 1, 0, 1);
+						break;
+					case "W":
+						Blinker.color = new Color(1, 1, 1, 1);
+						break;
+					}
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
-					Blinker.sprite = BlinkOff;
+					if(currentPattern != 0)
+					{
+						Blinker.sprite = BlinkOff;
+						Blinker.color = new Color(1, 1, 1, 1);
+					}
 					onOff = false;
 				}
 			}
@@ -166,7 +203,8 @@ public class ServerGUI : MonoBehaviour {
 
 	public void PressGO() {
 		started = true;
-		LastBlink = Time.time;
+		LastBlink = -10;
+		onOff = false;
 
 		bpm = int.Parse( BPMInput.text);
 		SliderBPM.value = bpm;
@@ -202,8 +240,8 @@ public class ServerGUI : MonoBehaviour {
 			}
 			float avg = tot /3;
 			Debug.Log( "avg =" + avg);
-			
-			LastBlink = clickTimes[0];
+			onOff = false;
+			LastBlink = -10;
 			bpm = (int)Utils.GetBMP (avg);
 			SliderBPM.value = bpm;
 			MSDiff = (Utils.GetMS (bpm, rhythm));
@@ -223,40 +261,55 @@ public class ServerGUI : MonoBehaviour {
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
-		SyncrotronSyncData.Instance.RpcSendCommandToClient("r1");
+		SyncrotronSyncData.SendCommandToClient("r1");
 	}
 	
 	public void ClickRhythm18()
 	{
-		rhythm = 0.5f;
+		rhythm = 2f;
 		ToggleRhythm[0].isOn = false;
 		ToggleRhythm[1].isOn = true;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = false;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
-		SyncrotronSyncData.Instance.RpcSendCommandToClient("r2");
+		SyncrotronSyncData.SendCommandToClient("r2");
 	}
 	
 	public void ClickRhythm116()
 	{
-		rhythm = 0.25f;
+		rhythm = 4f;
 		ToggleRhythm[0].isOn = false;
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = true;
 		ToggleRhythm[3].isOn = false;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
-		SyncrotronSyncData.Instance.RpcSendCommandToClient("r3");
+		SyncrotronSyncData.SendCommandToClient("r3");
 	}
 	
 	public void ClickRhythm132()
 	{
-		rhythm = 0.125f;
+		rhythm = 8f;
 		ToggleRhythm[0].isOn = false;
 		ToggleRhythm[1].isOn = false;
 		ToggleRhythm[2].isOn = false;
 		ToggleRhythm[3].isOn = true;
 		MSDiff = (Utils.GetMS (bpm, rhythm));
-		SyncrotronSyncData.Instance.RpcSendCommandToClient("r4");
+		SyncrotronSyncData.SendCommandToClient("r4");
+	}
+
+	public void ClickPattern(int patternNumber)
+	{
+		foreach(Toggle togglePattern in TogglePatterns)
+		{
+			togglePattern.isOn = false;
+		}
+		TogglePatterns[patternNumber].isOn = true;
+		currentPattern = patternNumber;
+	}
+
+	public void ClickReset()
+	{
+		ResetGUI();
 	}
 
 	public static void LoadServerScene()

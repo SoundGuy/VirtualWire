@@ -14,8 +14,6 @@ public class StreamAudioFilter : MonoBehaviour {
 
 	void Start()
 	{
-		//clipTest.
-		//SavWav.Save("test",clipTest);
 	}
 
 	//public float[] remainData;

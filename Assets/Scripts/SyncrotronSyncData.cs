@@ -42,6 +42,14 @@ public class SyncrotronSyncData : NetworkBehaviour {
 		ClientGUI.UpdateCommandText(command);
 	}
 
+	public static void SendCommandToClient(string command)
+	{
+		if(Instance)
+		{
+			Instance.RpcSendCommandToClient(command);
+		}
+	}
+
 	public static void UpdateBPM(int bpm)
 	{
 		if(Instance)
