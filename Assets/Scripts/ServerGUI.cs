@@ -57,6 +57,7 @@ public class ServerGUI : MonoBehaviour {
 #if UNITY_EDITOR || UNITY_STANDALONE
 			Sounds[i].clip = ClipsPC[i];
 #else
+			Screen.sleepTimeout = SleepTimeout.NeverSleep;
 			Sounds[i].clip = ClipsMobile[i];
 #endif
 		}
@@ -69,6 +70,13 @@ public class ServerGUI : MonoBehaviour {
 			Debug.Log("Pressed Manual");
 			PressSetManual();
 		}
+
+#if !UNITY_EDITOR && !UNITY_STANDALONE
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
+#endif
 	}
 
 	public void ResetGUI()
