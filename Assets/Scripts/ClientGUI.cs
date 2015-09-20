@@ -30,15 +30,9 @@ public class ClientGUI : MonoBehaviour {
 	bool onOff;
 	bool colorOnOff;
 
-	int [] ColorPattern;
 	string[] ColorPatternLetter;
 
 	private int currentPattern;
-	private int[] colorPatterns1 = { 36,  1,  2,  3,  4,  5,  6,  7 };
-	private int[] colorPatterns2 = { 36,  8,  9, 10, 11, 12, 13, 14 };
-	private int[] colorPatterns3 = { 36, 15, 16, 17, 18, 19, 20, 21 };
-	private int[] colorPatterns4 = { 36, 22, 23, 24, 25, 26, 27, 28 };
-	private int[] colorPatterns5 = { 36, 29, 30, 31, 32, 33, 34, 35 };
 
 
 	public void UpdateMSDiff()
@@ -49,7 +43,6 @@ public class ClientGUI : MonoBehaviour {
 	void Awake () {
 		Instance=this;
 		StartBPM();
-		ColorPattern = new int[8];
 		ColorPatternLetter = new string[8];
 		CurrentBeat = 0;
 		currentPattern = 0;
@@ -151,24 +144,6 @@ public class ClientGUI : MonoBehaviour {
 						Blinker.color = new Color(1, 1, 1, 1);
 						break;
 					}
-
-					/*switch (ColorPattern[CurrentBeat]) {
-					case 0:
-						Sounds[36].Play();
-						break;
-					case 1:
-						Sounds[11].Play();
-						Blinker.color = new Color(1, 0, 0, 1);
-						break;
-					case 2:
-						Sounds[9].Play();
-						Blinker.color = new Color(0, 1, 0, 1);
-						break;
-					case 3:
-						Sounds[8].Play();
-						Blinker.color = new Color(0, 0, 1, 1);
-						break;
-					}*/
 				}
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {

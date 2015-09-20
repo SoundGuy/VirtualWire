@@ -10,7 +10,6 @@ public class ServerGUI : MonoBehaviour {
 	public GroupToggleRGB[] GroupToggleRGBs;
 	public RectTransform ManualMarker;
 	private int currentToggleGroupRGB = 0;
-	int [] PatternColor;
 
 	// Patterns stuff
 	public Toggle[] TogglePatterns;
@@ -23,6 +22,15 @@ public class ServerGUI : MonoBehaviour {
 
 
 	// BPM stuff
+
+#if UNITY_EDITOR || UNITY_STANDALONE
+	public AudioClip[] ClipsPC;
+#endif
+#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
+	public AudioClip[] ClipsMobile;
+#endif
+
+	public AudioSource[] Sounds;
 
 	public Text BPMInput;
 	public Image Blinker;
@@ -43,7 +51,15 @@ public class ServerGUI : MonoBehaviour {
 	void Awake () {
 		Instance=this;
 		ResetGUI();
-		PatternColor = new int[8];
+
+		for(int i=0; i<Sounds.Length; i++)
+		{
+#if UNITY_EDITOR || UNITY_STANDALONE
+			Sounds[i].clip = ClipsPC[i];
+#else
+			Sounds[i].clip = ClipsMobile[i];
+#endif
+		}
 	}
 	
 	// Update is called once per frame
@@ -98,21 +114,6 @@ public class ServerGUI : MonoBehaviour {
 	public void PressSetManual() {
 		string command = "p";
 		for (int i=0;i<8;i++) {
-			/*string col="K";
-			PatternColor[i] = 0;
-
-			if (GroupToggleRGBs[i].ToggleR.isOn) {
-				PatternColor[i] = 1;
-				col ="R";
-			}  
-			if (GroupToggleRGBs[i].ToggleG.isOn) {
-				PatternColor[i] = 2;
-				col ="G";
-			}  
-			if (GroupToggleRGBs[i].ToggleB.isOn) {
-				PatternColor[i] = 3;
-				col ="B";
-			}*/
 
 			command +=GroupToggleRGBs[i].GetColorLetter();
 
@@ -145,27 +146,35 @@ public class ServerGUI : MonoBehaviour {
 					switch(GroupToggleRGBs[currentToggleGroupRGB].GetColorLetter())
 					{
 					case "K":
+						Sounds[36].Play();
 						Blinker.color = new Color(0, 0, 0, 1);
 						break;
 					case "B":
+						Sounds[1+(7*currentPattern)].Play();
 						Blinker.color = new Color(0, 0, 1, 1);
 						break;
 					case "G":
+						Sounds[2+(7*currentPattern)].Play();
 						Blinker.color = new Color(0, 1, 0, 1);
 						break;
 					case "C":
+						Sounds[3+(7*currentPattern)].Play();
 						Blinker.color = new Color(0, 1, 1, 1);
 						break;
 					case "R":
+						Sounds[4+(7*currentPattern)].Play();
 						Blinker.color = new Color(1, 0, 0, 1);
 						break;
 					case "P":
+						Sounds[5+(7*currentPattern)].Play();
 						Blinker.color = new Color(1, 0, 1, 1);
 						break;
 					case "Y":
+						Sounds[6+(7*currentPattern)].Play();
 						Blinker.color = new Color(1, 1, 0, 1);
 						break;
 					case "W":
+						Sounds[7+(7*currentPattern)].Play();
 						Blinker.color = new Color(1, 1, 1, 1);
 						break;
 					}
