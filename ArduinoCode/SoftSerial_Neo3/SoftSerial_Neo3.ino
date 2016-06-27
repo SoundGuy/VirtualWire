@@ -8,7 +8,7 @@
 // Copyright (C) 2008 Mike McCauley
 // $Id: receiver.pde,v 1.3 2009/03/30 00:07:24 mikem Exp $
 
-#include <VirtualWire.h>
+//#include <VirtualWire.h>
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
   #include <avr/power.h>
@@ -18,9 +18,14 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(11, PIN, NEO_GRB + NEO_KHZ800);
 
 
-const int led_pin = 3;
-const int receive_pin = 2;
-const int analog_pin = 2; //PB4
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(10, 11); // RX, TX
+
+
+const int led_pin = 13;
+//const int receive_pin = 2;
+//const int analog_pin = 2; //PB4
 const int unit_id = 0; // for odd/even reference, etc.
 
 int sensorValue=0;
@@ -34,11 +39,11 @@ void setup()
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
   #endif
   // End of trinket special code
-  pinMode(analog_pin , INPUT); 
+  //pinMode(analog_pin , INPUT); 
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
-  colorWipe(strip.Color(0, 128, 128), 25); // Red 
+  colorWipe(strip.Color(128, 64, 64), 25); // Red 
 
     delay(200);
 
@@ -50,11 +55,14 @@ digitalWrite(led_pin, HIGH); // Flash a light to show received good message
     
 colorWipe(strip.Color(0, 0, 0), 0); // blank
     // Initialise the IO and ISR
-    vw_set_rx_pin(receive_pin);
-    vw_setup(2000);	 // Bits per sec
+//    vw_set_rx_pin(receive_pin);
+ //   vw_setup(2000);	 // Bits per sec
 
-    vw_rx_start();       // Start the receiver PLL running
+   // vw_rx_start();       // Start the receiver PLL running
 
+Serial.begin(9600);
+Serial.write("started!");
+mySerial.begin(9600);
     //pinMode(led_pin, OUTPUT);
 }
 
@@ -129,17 +137,43 @@ void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
 }*/
 
 void loop() {
+  /*
   sensorValue = analogRead(analog_pin );
   if(sensorValue > 10) {
     digitalWrite(led_pin, HIGH); // Flash a light to show received good message
   } 
   else {
     digitalWrite(led_pin, LOW); // Flash a light to show received good message
-  }
-  uint8_t buf[VW_MAX_MESSAGE_LEN];
-  uint8_t buflen = VW_MAX_MESSAGE_LEN;
+  }*/
+  //uint8_t buf[VW_MAX_MESSAGE_LEN];
+ // uint8_t buflen = VW_MAX_MESSAGE_LEN;
+
+ 
+  uint8_t buf[256];
+  uint8_t buflen = 7;
+  int i=0;
+  bool endofline = false;
+  //if (vw_get_message(buf, &buflen)) { // Non-blocking    
+  if (mySerial.available()) {
+  //if (vw_get_message(buf, &buflen)) { // Non-blocking    
   
-  if (vw_get_message(buf, &buflen)) { // Non-blocking    
+    for (i=0;i<buflen && !endofline;i++){
+      buf[i] = mySerial.read();
+      Serial.write(buf[i]);
+      delay(20);
+      if (buf[i] == '/n'){
+        endofline = true;
+      }
+      if (buf[i] == -1) {
+        i--; 
+      }
+      /*while (!mySerial.available()) {
+        digitalWrite(led_pin, HIGH); // Flash a light to show received good message       
+        delay(2);
+        digitalWrite(led_pin, LOW);
+      }*/
+      
+    }
     uint8_t msg_id = buf[0];
     switch (msg_id) {
       case 'C': // 67 // turn color constant 'on'
