@@ -186,7 +186,7 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 					{
 						if (GUI.Button(new Rect(xpos, ypos, 200, 20), "Create Internet Match"))
 						{
-							manager.matchMaker.CreateMatch(manager.matchName, manager.matchSize, true, "", manager.OnMatchCreate);
+							//manager.matchMaker.CreateMatch(manager.matchName, manager.matchSize, true, "", manager.OnMatchCreate);
 						}
 						ypos += spacing;
 						
@@ -198,7 +198,7 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 						
 						if (GUI.Button(new Rect(xpos, ypos, 200, 20), "Find Internet Match"))
 						{
-							manager.matchMaker.ListMatches(0,20, "", manager.OnMatchList);
+							//manager.matchMaker.ListMatches(0,20, "", manager.OnMatchList);
 						}
 						ypos += spacing;
 					}
@@ -210,7 +210,7 @@ public class SyncrotronNetworkManager : MonoBehaviour {
 							{
 								manager.matchName = match.name;
 								manager.matchSize = (uint)match.currentSize;
-								manager.matchMaker.JoinMatch(match.networkId, "", manager.OnMatchJoined);
+								//manager.matchMaker.JoinMatch(match.networkId, "", manager.OnMatchJoined);
 							}
 							ypos += spacing;
 						}

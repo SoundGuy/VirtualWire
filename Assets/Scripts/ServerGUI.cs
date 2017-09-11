@@ -13,7 +13,7 @@ public class ServerGUI : MonoBehaviour {
 
 	// Patterns stuff
 	public Toggle[] TogglePatterns;
-	private int currentPattern;
+	public int currentPattern;
 
 	// Rhythm stuff
 	public Toggle[] ToggleRhythm;
@@ -135,7 +135,53 @@ public class ServerGUI : MonoBehaviour {
 		SyncrotronSyncData.SendCommandToClient(command);
 	}
 
-	void UpdateBPM()
+
+    IEnumerator sendWWWCommand()
+    {
+        string url = "http://10.0.0.4/";
+        Color color = Blinker.color;
+
+        string colorStr = (color.r * 255 ).ToString("000") + "," + 
+                          (color.g * 255 ).ToString("000") + "," + 
+                          (color.b * 255 ).ToString("000");
+
+        Debug.Log("Called www command Color" + colorStr);
+
+
+        if (color == Color.black)
+        {
+            url += "C000,000,000";
+            WWW www1 = new WWW(url);
+            yield return www1;
+            
+        }
+
+
+
+        switch (currentPattern)
+        {
+            case 0:
+                url += "C" + colorStr;                
+            break;
+
+            case 1:
+                url += "c" + colorStr+ ",064";
+                break;
+
+            case 2:
+                url += "c" + colorStr + ",128";
+            break;
+
+
+        }
+
+
+        WWW www = new WWW(url);
+        yield return www;
+    }
+
+
+void UpdateBPM()
 	{
 		if (started) {
 			if (onOff == false) {
@@ -149,6 +195,8 @@ public class ServerGUI : MonoBehaviour {
 					{
 						currentToggleGroupRGB = 0;
 					}
+
+                   // Debug.Log("Blinker ON");
 
 					ManualMarker.localPosition= new Vector3(GroupToggleRGBs[currentToggleGroupRGB].transform.localPosition.x, ManualMarker.localPosition.y, ManualMarker.localPosition.z);
 					switch(GroupToggleRGBs[currentToggleGroupRGB].GetColorLetter())
@@ -186,7 +234,9 @@ public class ServerGUI : MonoBehaviour {
 						Blinker.color = new Color(1, 1, 1, 1);
 						break;
 					}
-				}
+                  //  Debug.Log("Calling Blinker");
+                    StartCoroutine(sendWWWCommand());
+                }
 			} else {
 				if (Time.time > LastBlink + MSDiff + BlinkLength) {
 					LastBlink = LastBlinkStart;
