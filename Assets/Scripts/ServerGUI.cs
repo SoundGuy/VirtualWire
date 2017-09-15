@@ -138,12 +138,14 @@ public class ServerGUI : MonoBehaviour {
 
     IEnumerator sendWWWCommand()
     {
-        string url = "http://10.0.0.4/";
+        string url = "http://192.168.1.100/";
         Color color = Blinker.color;
 
-        string colorStr = (color.r * 255 ).ToString("000") + "," + 
-                          (color.g * 255 ).ToString("000") + "," + 
-                          (color.b * 255 ).ToString("000");
+        int brightness = 128;
+
+        string colorStr = (color.r * brightness).ToString("000") + "," + 
+                          (color.g * brightness).ToString("000") + "," + 
+                          (color.b * brightness).ToString("000");
 
         Debug.Log("Called www command Color" + colorStr);
 

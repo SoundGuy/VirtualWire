@@ -10,10 +10,21 @@
 
 //#include <VirtualWire.h>
 #include <ESP8266WiFi.h>
-const char* ssid = "CORBOMITE3";
-const char* password = "tranIa1701-A!";
+#include <PubSubClient.h>
+//const char* ssid = "Corbomite2";
+//const char* password = "tranIa1701-A!";
+
+const char* ssid = "Oded Sharon iPhone6";
+const char* password = "BoltRiley";
+
+
+//const char* ssid = "BrainSync";
+//const char* password = "12343210";
+
+IPAddress serverHAP(172, 20, 10, 11);
 
 WiFiServer server(80);
+#define BUFFER_SIZE 100
 
 
 
@@ -23,7 +34,10 @@ WiFiServer server(80);
 #endif
 
 #define PIN D3
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, PIN, NEO_GRB + NEO_KHZ800);
+
+#define LightPIN D7
+#define LedNumber 80
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(LedNumber, PIN, NEO_GRB + NEO_KHZ800);
 
 
 const int led_pin = LED_BUILTIN;
@@ -35,11 +49,45 @@ int sensorValue=0;
 int bpm = 0;
 
 
+
+WiFiClient wclient;
+PubSubClient clientHAP(wclient, serverHAP);
+
+
+void callback(const MQTT::Publish& pub) {
+  // handle message arrived
+  Serial.print(pub.topic());
+  Serial.print(" => ");
+
+    Serial.println(pub.payload_string());
+
+    if(pub.payload_string() == "on")
+    {
+      digitalWrite(LightPIN, HIGH);
+      colorFadeIn(64,64,64,200);
+    }
+    else
+    {
+      digitalWrite(LightPIN, LOW);
+      colorFadeOut(64,64,64,128);
+    }
+
+}
+
+
 void setup()
 {
 
   Serial.begin(74880);
-  
+
+
+   
+pinMode(LightPIN,OUTPUT); 
+digitalWrite(LightPIN, HIGH); // Flash a light to show received good message
+     //   delay(1500);
+       
+digitalWrite(LightPIN, LOW); 
+
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
   #if defined (__AVR_ATtiny85__)
     if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
@@ -49,10 +97,11 @@ void setup()
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
 
-pinMode(led_pin,OUTPUT); 
+pinMode(led_pin,OUTPUT);
 digitalWrite(led_pin, LOW); // Flash a light to show received good message
 
-  colorWipe(strip.Color(0, 128, 128), 25); // Red 
+
+  colorWipe(strip.Color(0, 128, 128), 25); // cyan 
 
 
 
@@ -86,6 +135,12 @@ digitalWrite(led_pin, LOW); // Flash a light to show received good message
         
         delay(250);
         digitalWrite(led_pin, HIGH);
+digitalWrite(LightPIN, LOW); 
+
+colorWipe(strip.Color(032, 0, 0), 0); // blank
+
+
+clientHAP.set_callback(callback);
     
 colorWipe(strip.Color(0, 0, 0), 0); // blank
     // Initialise the IO and ISR
@@ -95,6 +150,9 @@ colorWipe(strip.Color(0, 0, 0), 0); // blank
    // vw_rx_start();       // Start the receiver PLL running
 
     //pinMode(led_pin, OUTPUT);
+
+
+    
 }
 
 
@@ -149,7 +207,7 @@ void colorFadeIn(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   // make sure it's on
   colorWipe(strip.Color((uint8_t)r0, (uint8_t)g0, (uint8_t)b0), 0);
 }
-/*
+
 // Fill all pixels, fading in and out
 void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   int num_steps = 16;
@@ -167,7 +225,7 @@ void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   }
   // make sure it's off
   colorWipe(strip.Color(0,0,0), 0);
-}*/
+}
 
 void loop() {
 
@@ -175,6 +233,23 @@ void loop() {
   // Check if a client has connected
   WiFiClient client = server.available();
   if (!client) {
+    // no Server client=let's do HAP
+    
+      if (WiFi.status() == WL_CONNECTED) {
+        if (!clientHAP.connected()) {
+          Serial.println("Connecting to PI");
+          colorWipe(strip.Color(032, 0, 0), 25); // cyan
+          if (clientHAP.connect("ESP8266: AdyLight")) {
+            Serial.println("Pi Connected!");
+            colorWipe(strip.Color(0, 0, 0), 0); // blank
+             clientHAP.publish("outTopic","hello world");
+             clientHAP.subscribe("AdyLight");
+          }
+        }
+    
+        if (clientHAP.connected())
+          clientHAP.loop();
+      }
     return;
   }
  
@@ -254,6 +329,14 @@ idx = request.indexOf("/R");
 
   } 
 
+ idx = request.indexOf("/W");
+ if (idx  != -1) {
+     digitalWrite(led_pin, LOW);
+     digitalWrite(LightPIN, HIGH);
+         delay(1000);
+     digitalWrite(LightPIN, LOW);
+    digitalWrite(led_pin, HIGH);
+ }
 
   
   
