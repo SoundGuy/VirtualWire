@@ -104,10 +104,10 @@ pinMode(led_pin,OUTPUT);
 digitalWrite(led_pin, LOW); // Flash a light to show received good message
 
 
-  colorWipe(strip.Color(0, 128, 128), 25); // cyan 
+  colorWipe(strip.Color(64, 32, 0), 25); //  
 
 
-
+/*
   // Connect to WiFi network
   Serial.println();
   Serial.println();
@@ -144,7 +144,7 @@ colorWipe(strip.Color(032, 0, 0), 0); // blank
 
 
 clientHAP.set_callback(callback);
-    
+    */
 colorWipe(strip.Color(0, 0, 0), 0); // blank
     // Initialise the IO and ISR
  //   vw_set_rx_pin(receive_pin);
@@ -230,7 +230,40 @@ void colorFadeOut(uint8_t r0, uint8_t g0, uint8_t b0, uint8_t wait) {
   colorWipe(strip.Color(0,0,0), 0);
 }
 
+
+//Theatre-style crawling lights with rainbow effect
+void theaterChaseRainbow(uint8_t wait) {
+  for (int j=0; j < 256; j++) {     // cycle all 256 colors in the wheel
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < strip.numPixels(); i=i+3) {
+        strip.setPixelColor(i+q, Wheel( (i+j) % 255));    //turn every third pixel on
+      }
+      strip.show();
+
+      delay(wait);
+
+      for (int i=0; i < strip.numPixels(); i=i+3) {
+        strip.setPixelColor(i+q, 0);        //turn every third pixel off
+      }
+    }
+  }
+}
+
 int OldbuttonState = 0;
+
+unsigned long interval=3000;    // the time we need to wait
+unsigned long interval2=6000;    // the time we need to wait
+unsigned long interval3=9000;    // the time we need to wait
+unsigned long interval4=15000;    // the time we need to wait
+unsigned long interval5=20000;    // the time we need to wait
+unsigned long previousMillis=0; // millis() returns an unsigned long.
+
+bool doneInterval1 = false;
+bool doneInterval2 = false;
+bool doneInterval3 = false;
+bool doneInterval4 = false;
+bool doneInterval5 = false;
+
 void loop() {
 
    int buttonState = digitalRead(ButtonPin);
@@ -240,10 +273,20 @@ void loop() {
 
   if (OldbuttonState != buttonState) {
     OldbuttonState=buttonState;
+
+    
+    doneInterval1 = false;
+    doneInterval2 = false;
+    doneInterval3 = false;
+    doneInterval4 = false;
+    doneInterval5 = false;
+    
+    previousMillis = millis();
       if (OldbuttonState ==0) {
       
       digitalWrite(LightPIN, LOW);
       colorFadeOut(64,64,64,128);
+      colorFadeIn(16,16,8,200);
 
     }
     else
@@ -252,8 +295,52 @@ void loop() {
       colorFadeIn(64,64,64,200);
     
     }
-  }
+  } else {
+     if (OldbuttonState !=0) {
+      
+        if ((unsigned long)(millis() - previousMillis) >= interval && 
+            (unsigned long)(millis() - previousMillis) < interval2 &&
+            doneInterval1 == false) {
+
+            colorFadeIn(0,64,64,200);
+             doneInterval1 =true;
+        }
+
+
+        if ((unsigned long)(millis() - previousMillis) >= interval2 && 
+            (unsigned long)(millis() - previousMillis) < interval3
+            &&
+            doneInterval2 == false) {
+            doneInterval2 =true;
+            colorFadeIn(64,32,0,200);
+            
+        }
+
+
+        if ((unsigned long)(millis() - previousMillis) >= interval3 && 
+            (unsigned long)(millis() - previousMillis) < interval4 &&
+            doneInterval3 == false) {
+            doneInterval3 =true;
+            colorFadeIn(100,16,0,200);
   
+        }
+        
+       if ((unsigned long)(millis() - previousMillis) >= interval4 && 
+            (unsigned long)(millis() - previousMillis) < interval5 &&
+            doneInterval4 == false) {
+            doneInterval4 =true;
+            theaterChaseRainbow(10);
+        }
+        
+        if ((unsigned long)(millis() - previousMillis) >= interval5 ) {
+ 
+            rainbowCycle(20,5);
+        }
+    }
+    }
+  
+
+  return;
 
   // Check if a client has connected
   WiFiClient client = server.available();
